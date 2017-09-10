@@ -1,3 +1,5 @@
+'use strict';
+
 const appState = {
   yourLoc:{
     lat: null,
@@ -8,7 +10,16 @@ const appState = {
     lng: null
   },
   marker: [],
-  map: null
+  map: null,
+  curWeather:{
+    city:{
+      city_name:null,
+      country:null
+    },
+    windspd:{
+
+    }
+  }
 };
 
 //Set map to google maps
@@ -33,7 +44,7 @@ function setMarkerLatLng(data, state) {
   return markerLoc;
 }
 
-//make a marker every time u click
+//Make a marker every time u click
 function makeMarker(state) {
   state.marker.push(new google.maps.Marker({
     position: state.markerLocation,
@@ -41,41 +52,46 @@ function makeMarker(state) {
   }));
 }
 
-//clear the marker from the map
+//Clear the marker from the map
 function clearMarker(state) {
   state.marker.map(el => el.setMap(null));
 }
 
-function changeToMaps() {
-  $('.home_page').on('click', 'button', function(event){
-    console.log('hi');
-    $('.map_weather').removeClass('hidden');
-    $('.home_page_background').addClass('hidden');
+//Getting the string of the date
+function getDateString(date){
+  const day = (date.getDate() > 10) ? date.getDate() : `0${date.getDate()}`;
+  const month = (date.getMonth()+1 > 10) ? date.getMonth()+1 : `0${date.getMonth()+1}`;
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+//WeatherBit API
+function fetchWeatherBitApi(state){
+  const query = {
+    key: 'e5763a0d45a14f7385be5287fa59bdc0',
+    lat: state.markerLocation.lat || state.yourLoc.lat,
+    lon: state.markerLocation.lng || state.yourLoc.lng,
+  };
+
+  $.getJSON('https://api.weatherbit.io/v2.0/current', query, (response) => {
+    console.log(response);
+  });
+  $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, function(response){
+    console.log('hi',response);
   });
 }
 
-// function eventListeners(state){
-//   changeToMaps();
-// }
-
-$(changeToMaps());
-
+//Make and clear markers after initial Map Load
 function callbackGoogle(response) {
-  if (response !== null) { // if not initial query
+  if (response !== null) { 
     clearMarker(appState);
     setMarkerLatLng(response, appState);
     makeMarker(appState);
   }
-  // queryOpenWeather(appState);
+  fetchWeatherBitApi(appState);
 }
-// var map;
-// function initMap() {
-//   map = new google.maps.Map(document.getElementById('map'), {
-//     center: {lat: -34.397, lng: 150.644},
-//     zoom: 8
-//   });
-// }
 
+//Initializes the Google Map
 function initMap() {
   var uluru = {
     lat: -25.363,
@@ -123,6 +139,7 @@ function getYourCoords(infoWindow, state) {
   }
 }
 
+//Handles Geolocation (Your Location) Errors
 function handleLocationError(browserHasGeolocation, infoWindow, map) {
   infoWindow.setPosition(map.getCenter());
   infoWindow.setContent(browserHasGeolocation ?
