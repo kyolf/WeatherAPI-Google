@@ -76,7 +76,7 @@ html, body, section{
   height: 80px;
   width: 80px;
   display: block;
-  margin: 0 auto;
+  margin: 10px auto;
 }
 
 .weather_description{
@@ -93,7 +93,7 @@ html, body, section{
 }
 
 .wind_details{
-  margin: 0 10px 20px;
+  margin: 0 22px 20px;
   line-height: 1.5em;
 }
 
@@ -104,7 +104,13 @@ html, body, section{
 }
 
 @media only screen and (min-width: 400px){
-  .date{
-    height: 50px
+  .weather_details{
+    font-size: 1.1em;
+  }
+
+  .wind_details{
+    margin: 0 30px 20px;
+    line-height: 1.5em;
+    font-size: 1.1em;
   }
 }

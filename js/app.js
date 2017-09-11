@@ -171,7 +171,7 @@ function renderDates(element) {
     
 }
 
-//change correct Tabs
+//change to correct Tabs
 function tabChange(curWeatherState, curElement, changedWeatherState, changedElement) {
   if(curWeatherState.showing){
     curWeatherState.showing = false;
@@ -189,6 +189,7 @@ function changeDateTabsCss(curElement, changedElement) {
   changedElement.removeClass('date_border');
 }
 
+//all Event Listeners
 function eventListeners(state) {
   const curWeather = state.curWeather;
   const tmrWeather = state.tmrWeather;
