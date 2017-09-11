@@ -8,8 +8,3 @@ html, body, section{
 .hidden{
   display:none;
 }
-
-#map {
-  height: 100%;
-  width: 75%;
-}
