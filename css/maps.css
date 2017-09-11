@@ -26,7 +26,7 @@ html, body, section{
 }
 
 .hidden{
-  display:none;
+  display:none !important;
 }
 
 .weather{
@@ -135,12 +135,6 @@ html, body, section{
   line-height: 1.5em;
 }
 
-@media only screen and (min-width: 360px){
-  /* .date{
-    height: 100px
-  } */
-}
-
 @media only screen and (min-width: 400px){
   .weather_details{
     font-size: 1.1em;
@@ -150,5 +144,30 @@ html, body, section{
     margin: 0 30px 20px;
     line-height: 1.5em;
     font-size: 1.1em;
+  }
+}
+
+@media only screen and (min-width: 510px){
+  .wind_details{
+    text-align:center;
+  }
+}
+
+@media only screen and (min-width: 700px){
+  #map {
+    height: 100%;
+    width: 75%;
+  }
+
+  .map_weather{
+    flex-direction: row;
+  }
+
+  .weather{
+    width: 360px;
+  }
+
+  .outer_zipcode{
+    width: 200px;
   }
 }

@@ -272,6 +272,7 @@ function eventListeners(state) {
 
     if(!$('.outer_zipcode').hasClass('hidden')){
       $('.outer_zipcode').addClass('hidden');
+      $('.weather').removeClass('hidden');
     }
 
     if(checkValidZipCodeCountry(zipCode, country)) {
@@ -297,8 +298,9 @@ function eventListeners(state) {
       
       if(checkValidZipCodeCountry(zipCode, country)) {
 
-        if(!$('.outer_zipcode').hasClass('hidden')){
+        if(!$('.outer_zipcode').hasClass('hidden')) {
           $('.outer_zipcode').addClass('hidden');
+          $('.weather').removeClass('hidden');
         }
 
         fetchWeatherBitApiZip(state, zipCode, country);
@@ -324,8 +326,9 @@ function eventListeners(state) {
       
       if(checkValidZipCodeCountry(zipCode, country)) {
         
-        if(!$('.outer_zipcode').hasClass('hidden')){
+        if(!$('.outer_zipcode').hasClass('hidden')) {
           $('.outer_zipcode').addClass('hidden');
+          $('.weather').removeClass('hidden');
         }
 
         fetchWeatherBitApiZip(state, zipCode, country);
@@ -430,8 +433,9 @@ function getYourCoords(infoWindow, state) {
         lng: position.coords.longitude
       };
 
-      if(!$('.outer_zipcode').hasClass('hidden')){
+      if(!$('.outer_zipcode').hasClass('hidden')) {
         $('.outer_zipcode').addClass('hidden');
+        $('.weather').removeClass('hidden');
       }
 
       //modification to state
