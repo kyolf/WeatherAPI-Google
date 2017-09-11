@@ -7,8 +7,9 @@ const appState = {
   },
   markerLocation:{
     lat: null,
-    lng: null
+    lng: null,
   },
+  zipCodeSearch: false,
   marker: [],
   map: null,
   curWeather:{
@@ -58,6 +59,25 @@ const appState = {
   }
 };
 
+//checks if you enter valid country code and zipcode inputs
+function checkValidZipCodeCountry(zipCode, country) {
+  if(country !== '' && isNaN(country) && zipCode !== '' && !isNaN(zipCode)) {
+    return true;
+  }
+  else if(country === '' || !isNaN(country) || zipCode === '' || isNaN(zipCode)) {
+    return false;
+  }
+}
+
+//change to correct Tabs
+function tabChange(curWeatherState, curElement, changedWeatherState, changedElement) {
+  if(curWeatherState.showing){
+    curWeatherState.showing = false;
+    changedWeatherState.showing = true;
+    changeDateTabsCss(curElement, changedElement);
+  }
+}
+
 //Getting the string of the date
 function getDateString(date) {
   const curDay = date.getDate();
@@ -83,11 +103,22 @@ function setLatLng(pos, state) {
   return state.yourLoc;
 }
 
-//Set Marker Lat and Lng
-function setMarkerLatLng(state, data) {
+//Set Marker Lat and Lng from Google Point
+function setMarkerLatLngGoogle(state, data) {
   const markerLoc = state.markerLocation;
   markerLoc.lat = data.latLng.lat();
   markerLoc.lng = data.latLng.lng();
+  return markerLoc;
+}
+
+//Set Marker Lat and Lng from Zipcode
+function setMarkerLatLngZipcode(state, data) {
+  const markerLoc = state.markerLocation;
+  if(state.zipCodeSearch){
+    markerLoc.lat = Number(data.lat);
+    markerLoc.lng = Number(data.lon);
+    state.zipCodeSearch = false;
+  }
   return markerLoc;
 }
 
@@ -107,26 +138,37 @@ function clearMarker(state) {
 //Modify the curWeather Values
 function setCurWeatherValuesToState(state, data) {
   const curWeather = state.curWeather;
+  const tmrWeather = state.tmrWeather;
+  const dayAfter = state.dayAfterTmrWeather;
   
   if(data){
     curWeather.city.city_name = data.city_name;
     curWeather.city.country = data.country_code;
+
+    //In order to make city consistent 
+    //(weather api rounds lat and lng)
+    tmrWeather.city.city_name = data.city_name;
+    tmrWeather.city.country = data.country_code;
+    
+    dayAfter.city.city_name = data.city_name;
+    dayAfter.city.country = data.country_code;
+
     curWeather.wind.windDir = data.wind_cdir_full;
     curWeather.wind.windSpd = data.wind_spd;
     curWeather.weather = data.weather;
     curWeather.temp = data.temp;
     curWeather.clouds = data.clouds;
     curWeather.rh = data.rh;
+
+    setMarkerLatLngZipcode(state, data);
   }
   
   return curWeather;
 }
 
 //Modify the Forecast Values
-function setForecastWeatherValuesToState(forecast, response, data) {
-  if(response){
-    forecast.city.city_name = response.city_name;
-    forecast.city.country = response.country_code;
+function setForecastWeatherValuesToState(forecast, data) {
+  if(data){
     forecast.wind.windDir = data.wind_cdir_full;
     forecast.wind.windSpd = data.wind_spd;
     forecast.weather = data.weather;
@@ -150,7 +192,8 @@ function renderWeather(stateDate, element) {
       <p>${stateDate.clouds}% cloudy</p>
     </div>
     <p class="wind_details">Wind is blowing at ${stateDate.wind.windSpd} mph
-       in the ${stateDate.wind.windDir} direction.</p>`);
+       in the ${stateDate.wind.windDir} direction.
+    </p>`);
 }
 
 //render the dates
@@ -168,16 +211,20 @@ function renderDates(element) {
     <article class="date_box gray date_border dayAfterTmr_js">
       <p>${getDateString(dayAfterTmr)}</p>
     </article>`);
-    
 }
 
-//change to correct Tabs
-function tabChange(curWeatherState, curElement, changedWeatherState, changedElement) {
-  if(curWeatherState.showing){
-    curWeatherState.showing = false;
-    changedWeatherState.showing = true;
-    changeDateTabsCss(curElement, changedElement);
-  }
+//render the zipcode stuff
+function renderZipCode(element){
+  element.html(`          
+    <p class="welcome">
+      Click on any location to the explore world's weather! 
+      You can also search for weather by entering a zip code below.
+    </p>
+    <form class="zipcode_form" action="maps.html" method="post">
+      <input type="text" name="zipcode_input" placeholder="Zipcode/Postal Code" class="zipcode_input"/>
+      <input type="text" name="country_input" placeholder="Country Code" class="country_input"/>
+      <button type="button" class="zipcode_submit">Submit</button>
+    </form>`);
 }
 
 //Changing the colors and borders of the tabs
@@ -195,28 +242,107 @@ function eventListeners(state) {
   const tmrWeather = state.tmrWeather;
   const dayAfter = state.dayAfterTmrWeather;
 
+  //Todays Tab
   $('.date').on('click', '.today_js', (event) => {
-    renderWeather(state.curWeather, $('.weather_info'));
+    renderWeather(curWeather, $('.weather_info'));
     tabChange(tmrWeather, $('.tmr_js'), curWeather, $('.today_js'));
     tabChange(dayAfter, $('.dayAfterTmr_js'), curWeather, $('.today_js'));    
   });
 
+  //Tmr Tab
   $('.date').on('click', '.tmr_js', (event) => {
-    renderWeather(state.tmrWeather, $('.weather_info'));
+    renderWeather(tmrWeather, $('.weather_info'));
     tabChange(curWeather, $('.today_js'), tmrWeather, $('.tmr_js'));
     tabChange(dayAfter, $('.dayAfterTmr_js'), tmrWeather, $('.tmr_js'));
   });
 
+  //dayAfter Tmr Tab
   $('.date').on('click', '.dayAfterTmr_js', (event) => {
-    renderWeather(state.dayAfterTmrWeather, $('.weather_info'));
+    renderWeather(dayAfter, $('.weather_info'));
     tabChange(curWeather, $('.today_js'), dayAfter, $('.dayAfterTmr_js'));
     tabChange(tmrWeather, $('.tmr_js'), dayAfter, $('.dayAfterTmr_js'));
+  });
+
+  //ZipCode Button
+  $('.outer_zipcode, .zipcode').on('click', '.zipcode_submit', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const country = $('.country_input').val();
+    const zipCode = $('.zipcode_input').val();
+
+    if(!$('.outer_zipcode').hasClass('hidden')){
+      $('.outer_zipcode').addClass('hidden');
+    }
+
+    if(checkValidZipCodeCountry(zipCode, country)) {
+      fetchWeatherBitApiZip(state, zipCode, country);
+      $('.zipcode_input').val('');
+      $('.country_input').val('');      
+    }
+    else {
+      alert('Enter Valid Country or Valid Zipcode');
+    }
+  });
+
+  //ZipCode Enter Key Zipcode
+  $('.outer_zipcode, .zipcode').on('keypress', '.zipcode_input', (event) => {
+    event.stopPropagation();
+    
+    const key = event.which;
+    const country = $('.country_input').val();
+    const zipCode = $('.zipcode_input').val();
+
+    if(key === 13){
+      event.preventDefault();
+      
+      if(checkValidZipCodeCountry(zipCode, country)) {
+
+        if(!$('.outer_zipcode').hasClass('hidden')){
+          $('.outer_zipcode').addClass('hidden');
+        }
+
+        fetchWeatherBitApiZip(state, zipCode, country);
+        $('.zipcode_input').val('');
+        $('.country_input').val('');      
+      }
+      else {
+        alert('Enter Valid Country or Valid Zipcode');
+      }
+    }
+  });
+
+  //ZipCode Enter Key Country
+  $('.outer_zipcode, .zipcode').on('keypress', '.country_input', (event) => {
+    event.stopPropagation();
+    
+    const key = event.which;
+    const country = $('.country_input').val();
+    const zipCode = $('.zipcode_input').val();
+
+    if(key === 13){
+      event.preventDefault();
+      
+      if(checkValidZipCodeCountry(zipCode, country)) {
+        
+        if(!$('.outer_zipcode').hasClass('hidden')){
+          $('.outer_zipcode').addClass('hidden');
+        }
+
+        fetchWeatherBitApiZip(state, zipCode, country);
+        $('.zipcode_input').val('');
+        $('.country_input').val('');      
+      }
+      else {
+        alert('Enter Valid Country or Valid Zipcode');
+      }
+    }
   });
 
 }
 
 //WeatherBit API
-function fetchWeatherBitApi(state) {
+//fetches for the JSON values by Lat and Lng
+function fetchWeatherBitApiLatLng(state) {
   const query = {
     key: 'e5763a0d45a14f7385be5287fa59bdc0',
     units: 'I',
@@ -225,16 +351,42 @@ function fetchWeatherBitApi(state) {
   };
 
   $.getJSON('https://api.weatherbit.io/v2.0/current', query, (response) => {
-    console.log(response);
     renderDates($('.date'));
-    setCurWeatherValuesToState(appState, response.data[0]);
+    renderZipCode($('.zipcode'));
+    setCurWeatherValuesToState(state, response.data[0]);
     renderWeather(state.curWeather, $('.weather_info'));
   });
 
-  $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, function(response){
-    console.log('hi',response);
-    setForecastWeatherValuesToState(state.tmrWeather, response, response.data[0]);
-    setForecastWeatherValuesToState(state.dayAfterTmrWeather, response, response.data[8]);
+  $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, (response) => {
+    setForecastWeatherValuesToState(state.tmrWeather, response.data[0]);
+    setForecastWeatherValuesToState(state.dayAfterTmrWeather, response.data[8]);
+  });
+}
+
+//fetches for the JSON values by Zipcode
+function fetchWeatherBitApiZip(state, zipCode, country) {
+  const query = {
+    key: 'e5763a0d45a14f7385be5287fa59bdc0',
+    units: 'I',
+    postal_code: zipCode,
+    country: country
+  };
+
+  $.getJSON('https://api.weatherbit.io/v2.0/current', query, (response) => {
+    renderDates($('.date'));
+    renderZipCode($('.zipcode'));
+    clearMarker(state);
+    state.zipCodeSearch = true;
+    setCurWeatherValuesToState(state, response.data[0]);
+    renderWeather(state.curWeather, $('.weather_info'));
+
+    makeMarker(state);
+    state.map.setCenter(state.markerLocation);
+  });
+
+  $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, (response) => {
+    setForecastWeatherValuesToState(state.tmrWeather, response.data[0]);
+    setForecastWeatherValuesToState(state.dayAfterTmrWeather, response.data[8]);
   });
 }
 
@@ -242,10 +394,11 @@ function fetchWeatherBitApi(state) {
 function callbackGoogle(response) {
   if (response !== null) { 
     clearMarker(appState);
-    setMarkerLatLng(appState, response);
+    setMarkerLatLngGoogle(appState, response);
     makeMarker(appState);
+    appState.map.setCenter(appState.markerLocation);
   }
-  fetchWeatherBitApi(appState);
+  fetchWeatherBitApiLatLng(appState);
 }
 
 //Initializes the Google Map
@@ -266,7 +419,6 @@ function initMap() {
   //clicking on google maps
   google.maps.event.addDomListener(map, 'click', callbackGoogle);
   eventListeners(appState);
-
 }
 
 //Get your Coordinates
@@ -278,12 +430,16 @@ function getYourCoords(infoWindow, state) {
         lng: position.coords.longitude
       };
 
+      if(!$('.outer_zipcode').hasClass('hidden')){
+        $('.outer_zipcode').addClass('hidden');
+      }
+
       //modification to state
       setLatLng(pos, state);
 
       callbackGoogle(null);
       infoWindow.setPosition(pos);
-      infoWindow.setContent('Location found.\n Click Anywhere On the Map or Enter ZipCode to Begin!');
+      infoWindow.setContent('Location found.');
       infoWindow.open(state.map);
       state.map.setCenter(pos);
     }, function() {
@@ -300,7 +456,7 @@ function getYourCoords(infoWindow, state) {
 function handleLocationError(browserHasGeolocation, infoWindow, map) {
   infoWindow.setPosition(map.getCenter());
   infoWindow.setContent(browserHasGeolocation ?
-    'The Geolocation service was blocked.\n Click Anywhere On the Map or Enter ZipCode to Begin!' :
-    'Your browser doesn\'t support geolocation.\n Click Anywhere On the Map or Enter ZipCode to Begin!');
+    'Error: The Geolocation service was blocked.' :
+    'Error: Your browser doesn\'t support geolocation.');
   infoWindow.open(map);
 }
