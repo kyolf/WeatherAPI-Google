@@ -236,6 +236,14 @@ function changeDateTabsCss(curElement, changedElement) {
   changedElement.removeClass('date_border');
 }
 
+//Hide Outer Zipcode class
+function hideOuterZipcode(zipCode, weather) {
+  if(!zipCode.hasClass('hidden')) {
+    zipCode.addClass('hidden');
+    weather.removeClass('hidden');
+  }
+}
+
 //all Event Listeners
 function eventListeners(state) {
   const curWeather = state.curWeather;
@@ -270,10 +278,7 @@ function eventListeners(state) {
     const country = $('.country_input').val();
     const zipCode = $('.zipcode_input').val();
 
-    if(!$('.outer_zipcode').hasClass('hidden')){
-      $('.outer_zipcode').addClass('hidden');
-      $('.weather').removeClass('hidden');
-    }
+    hideOuterZipcode($('.outer_zipcode'), $('.weather'));
 
     if(checkValidZipCodeCountry(zipCode, country)) {
       fetchWeatherBitApiZip(state, zipCode, country);
@@ -297,11 +302,7 @@ function eventListeners(state) {
       event.preventDefault();
       
       if(checkValidZipCodeCountry(zipCode, country)) {
-
-        if(!$('.outer_zipcode').hasClass('hidden')) {
-          $('.outer_zipcode').addClass('hidden');
-          $('.weather').removeClass('hidden');
-        }
+        hideOuterZipcode($('.outer_zipcode'), $('.weather'));
 
         fetchWeatherBitApiZip(state, zipCode, country);
         $('.zipcode_input').val('');
@@ -325,11 +326,7 @@ function eventListeners(state) {
       event.preventDefault();
       
       if(checkValidZipCodeCountry(zipCode, country)) {
-        
-        if(!$('.outer_zipcode').hasClass('hidden')) {
-          $('.outer_zipcode').addClass('hidden');
-          $('.weather').removeClass('hidden');
-        }
+        hideOuterZipcode($('.outer_zipcode'), $('.weather'));
 
         fetchWeatherBitApiZip(state, zipCode, country);
         $('.zipcode_input').val('');
@@ -354,10 +351,18 @@ function fetchWeatherBitApiLatLng(state) {
   };
 
   $.getJSON('https://api.weatherbit.io/v2.0/current', query, (response) => {
+    hideOuterZipcode($('.outer_zipcode'), $('.weather'));
     renderDates($('.date'));
     renderZipCode($('.zipcode'));
     setCurWeatherValuesToState(state, response.data[0]);
     renderWeather(state.curWeather, $('.weather_info'));
+  })
+  .fail((response) => {
+    if(response.status === 429){
+      const str = response.responseText.split(',')[2];
+      const mins = str.substring(16, str.length -3);
+      alert(`Weatherbit.io limits 75 requests per hour! \nPlease Try Again in ${mins}!!`);
+    }
   });
 
   $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, (response) => {
@@ -385,6 +390,16 @@ function fetchWeatherBitApiZip(state, zipCode, country) {
 
     makeMarker(state);
     state.map.setCenter(state.markerLocation);
+  })
+  .fail((response) => {
+    if(response.status === 429){
+      const str = response.responseText.split(',')[2];
+      const mins = str.substring(16, str.length -3);
+      alert(`Weatherbit.io limits 75 requests per hour! \nPlease Try Again in ${mins}!!`);
+    }
+    else{
+      alert('Invalid Global Postal code in the country you typed in');
+    }
   });
 
   $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, (response) => {
@@ -433,12 +448,6 @@ function getYourCoords(infoWindow, state) {
         lng: position.coords.longitude
       };
 
-      if(!$('.outer_zipcode').hasClass('hidden')) {
-        $('.outer_zipcode').addClass('hidden');
-        $('.weather').removeClass('hidden');
-      }
-
-      //modification to state
       setLatLng(pos, state);
 
       callbackGoogle(null);
@@ -451,7 +460,6 @@ function getYourCoords(infoWindow, state) {
     });
   } 
   else {
-    // Browser doesn't support Geolocation
     handleLocationError(false, infoWindow, state.map);
   }
 }
