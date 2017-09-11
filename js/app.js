@@ -114,7 +114,7 @@ function setMarkerLatLngGoogle(state, data) {
 //Set Marker Lat and Lng from Zipcode
 function setMarkerLatLngZipcode(state, data) {
   const markerLoc = state.markerLocation;
-  if(state.zipCodeSearch){
+  if(state.zipCodeSearch) {
     markerLoc.lat = Number(data.lat);
     markerLoc.lng = Number(data.lon);
     state.zipCodeSearch = false;
@@ -218,7 +218,7 @@ function renderZipCode(element){
   element.html(`          
     <p class="welcome">
       Click on any location to the explore world's weather! 
-      You can also search for weather by entering a zip code below.
+      You can also search for weather by entering the global postal code below.
     </p>
     <form class="zipcode_form" action="maps.html" method="post">
       <input type="text" name="zipcode_input" placeholder="Zipcode/Postal Code" class="zipcode_input"/>
