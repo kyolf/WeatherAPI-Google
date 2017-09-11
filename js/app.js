@@ -9,6 +9,7 @@ const appState = {
     lat: null,
     lng: null,
   },
+  invalidZipcode: false,
   zipCodeSearch: false,
   marker: [],
   map: null,
@@ -381,15 +382,33 @@ function fetchWeatherBitApiZip(state, zipCode, country) {
   };
 
   $.getJSON('https://api.weatherbit.io/v2.0/current', query, (response) => {
-    renderDates($('.date'));
-    renderZipCode($('.zipcode'));
-    clearMarker(state);
-    state.zipCodeSearch = true;
-    setCurWeatherValuesToState(state, response.data[0]);
-    renderWeather(state.curWeather, $('.weather_info'));
+    if(response){
+      renderDates($('.date'));
+      renderZipCode($('.zipcode'));
+      clearMarker(state);
+      state.zipCodeSearch = true;
+      setCurWeatherValuesToState(state, response.data[0]);
+      renderWeather(state.curWeather, $('.weather_info'));
 
-    makeMarker(state);
-    state.map.setCenter(state.markerLocation);
+      makeMarker(state);
+      state.map.setCenter(state.markerLocation);
+    }    
+    else{
+      renderZipCode($('.zipcode'));
+      alert('Invalid Global Postal Code is not in the country that you typed in');
+      state.invalidZipcode = true;
+      console.log('here');
+    }
+  })
+  .done(() => {
+    if(!state.invalidZipcode){
+      console.log('bad', state.invalidZipcode);
+      $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, (response) => {
+        setForecastWeatherValuesToState(state.tmrWeather, response.data[0]);
+        setForecastWeatherValuesToState(state.dayAfterTmrWeather, response.data[8]);
+      });
+    }
+    state.invalidZipcode = false;
   })
   .fail((response) => {
     if(response.status === 429){
@@ -398,14 +417,10 @@ function fetchWeatherBitApiZip(state, zipCode, country) {
       alert(`Weatherbit.io limits 75 requests per hour! \nPlease Try Again in ${mins}!!`);
     }
     else{
-      alert('Invalid Global Postal code in the country you typed in');
+      alert('Invalid Global Postal Code in the country you typed in');
     }
   });
 
-  $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, (response) => {
-    setForecastWeatherValuesToState(state.tmrWeather, response.data[0]);
-    setForecastWeatherValuesToState(state.dayAfterTmrWeather, response.data[8]);
-  });
 }
 
 //Make and clear markers after initial Map Load
