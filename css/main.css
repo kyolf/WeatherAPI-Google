@@ -69,7 +69,7 @@ html, body{
 @media only screen and (min-width: 500px){
   .home_page>h1{
     text-align: left;
-    margin: 150px 20px 20px;
+    margin: 135px 20px 20px;
     font-size: 2.6em;
   }
 
@@ -82,10 +82,16 @@ html, body{
   }
 }
 
+@media only screen and (min-width: 570px){
+  .home_page>h1{
+    margin: 150px 20px 20px;
+  }
+}
+
 @media only screen and (min-width: 700px){
-  /* .home_page>h1{
-    margin: 190px 20px 20px;
-  } */
+  .home_page>h1{
+    margin: 160px 20px 20px;
+  }
 
   .get_started{
     width: 20%;
