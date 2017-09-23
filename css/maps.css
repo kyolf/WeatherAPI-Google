@@ -3,7 +3,8 @@ html, body, section{
   height:100%;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Muli', Sans-Serif;
+  font-size: 16px;
 }
 
 .map_weather{
@@ -22,7 +23,7 @@ html, body, section{
 }
 
 .outer_zipcode{
-  order:2;
+  order:3;
   margin: 20px 10px;
 }
 
@@ -31,7 +32,7 @@ html, body, section{
 }
 
 .weather{
-  order:3;
+  order:2;
   display: flex;
   flex-direction: column;
   overflow: auto;
@@ -73,15 +74,22 @@ html, body, section{
 }
 
 .zipcode{
-  order:2;
+  order: 3;
   margin: 50px 20px 5px;
 }
 
+.app_title{
+  font-family: 'Merriweather', Serif;
+  text-align: center;
+  color: #2b4839;
+  margin: 30px 0 20px;
+  font-size: 1.9rem;
+}
+
 .welcome{
-  font-size:1.3em;
+  font-size: 1.3rem;
   line-height: 1.4em;
-  /* margin: 65px 10px 20px; */
-  margin: 0 0 15px;
+  margin: 0 0 20px;
 }
 
 .zipcode_form{
@@ -97,7 +105,17 @@ html, body, section{
 }
 
 .zipcode_submit{
-  margin: 0 auto;
+  margin: 5px auto 0;
+}
+
+.css_button{
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  width: 6rem;
+  background-color: #2b4839;
+  color: #FFF;
+  padding: 7px;
 }
 
 .weather_info{
@@ -105,10 +123,11 @@ html, body, section{
 }
 
 .city_name{
-  font-size: 1.6em;
+  font-family: 'Merriweather', Serif;
+  font-size: 1.6rem;
   font-weight: bold;
-  text-align:center;
-  margin: 10px 0;
+  text-align: center;
+  margin: 15px 0 10px;
 }
 
 .weather_icons{
@@ -119,16 +138,19 @@ html, body, section{
 }
 
 .weather_description{
+  font-family: 'Merriweather', Serif;
   margin: 0 auto;
-  font-size: 1.2em;
+  font-size: 1.2rem;
   font-weight: bold;
-  text-align:center;
+  text-align: center;
+  color: #2b4839;
 }
 
 .weather_details{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  padding: 10px;
 }
 
 .wind_details{
@@ -138,17 +160,24 @@ html, body, section{
 
 @media only screen and (min-width: 400px){
   .weather_details{
-    font-size: 1.1em;
+    font-size: 1.1rem;
   }
 
   .wind_details{
     margin: 0 30px 20px;
     line-height: 1.5em;
-    font-size: 1.1em;
+    font-size: 1.1rem;
   }
 }
 
-@media only screen and (min-width: 510px){
+@media only screen and (min-width: 450px){
+  .weather_details{
+    width: 400px;
+    margin: 0 auto;
+  }
+}
+
+@media only screen and (min-width: 475px){
   .wind_details{
     text-align:center;
   }
@@ -168,17 +197,37 @@ html, body, section{
     width: 430px;
   }
 
-  .outer_zipcode{
-    width: 300px;
+  .weather_details{
+    width: initial;
   }
 
-  .zipcode{
-    margin: 20px 20px 20px;
+  .outer_zipcode{
+    width: 300px;
   }
 }
 
 @media only screen and (min-width: 1100px){
   .outer_zipcode{
     margin: 20px;
+  }
+}
+
+@media only screen and (min-height: 680px){
+  .zipcode{
+    margin: 40px 20px 20px;
+  }
+
+  .app_title{
+    margin: 30px 0 20px;
+  }
+}
+
+@media only screen and (min-height: 700px){
+  .zipcode{
+    margin: 30px 20px 20px;
+  }
+
+  .app_title{
+    margin: 20px 0 20px;
   }
 }

@@ -3,7 +3,7 @@
   <head>
     <title>Weather Point Or Zip</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather|Muli:300" rel="stylesheet">
     <link rel="stylesheet" href="css/maps.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css" />
   </head>
@@ -15,13 +15,14 @@
         <aside class="weather_info"></aside>
       </aside>
       <aside class="outer_zipcode">
+        <h1 class="app_title">Weather Mapper</h1>
         <p class="welcome">
-          Click on any location to the explore world's weather! You can also search for weather by entering the global postal code below.
+            Click on any location or enter the global postal code below to lookup the weather! 
         </p>
         <form class="zipcode_form" action="maps.html" method="post">
           <input type="text" name="zipcode_input" placeholder="Zipcode/Postal Code" class="zipcode_input"/>
           <input type="text" name="country_input" placeholder="Country Code" class="country_input"/>
-          <button type="button" class="zipcode_submit">Submit</button>
+          <button type="button" class="zipcode_submit css_button">Submit</button>
         </form>
       </aside>
       <main id="map">

@@ -217,15 +217,14 @@ function renderDates(element) {
 //render the zipcode stuff
 function renderZipCode(element){
   element.html(` 
-    <h1>Weather Mapper</h1>         
+    <h1 class="app_title">Weather Mapper</h1>         
     <p class="welcome">
-      Click on any location to the explore world's weather! 
-      You can also search for weather by entering the global postal code below.
+      Click on any location or enter the global postal code below to lookup the weather! 
     </p>
     <form class="zipcode_form" action="maps.html" method="post">
       <input type="text" name="zipcode_input" placeholder="Zipcode/Postal Code" class="zipcode_input"/>
       <input type="text" name="country_input" placeholder="Country Code" class="country_input"/>
-      <button type="button" class="zipcode_submit">Submit</button>
+      <button type="button" class="zipcode_submit css_button">Submit</button>
     </form>`);
 }
 
