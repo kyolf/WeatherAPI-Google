@@ -4,20 +4,31 @@
     <title>Weather Point Or Zip</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/maps.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css" />
   </head>
   <body>
-    <section class="home_page_background">
-      <main class="home_page">
-        <h1>Weather Mapper</h1>
-        <p>Search for today, tomorrow, and the day after tomorrow's weather with the help of Google Maps and Weatherbit.io</p>
+    <section class="map_weather">
+      <aside class="weather hidden">
+        <nav class="date"></nav>
+        <aside class="zipcode"></aside>
+        <aside class="weather_info"></aside>
+      </aside>
+      <aside class="outer_zipcode">
+        <p class="welcome">
+          Click on any location to the explore world's weather! You can also search for weather by entering the global postal code below.
+        </p>
+        <form class="zipcode_form" action="maps.html" method="post">
+          <input type="text" name="zipcode_input" placeholder="Zipcode/Postal Code" class="zipcode_input"/>
+          <input type="text" name="country_input" placeholder="Country Code" class="country_input"/>
+          <button type="button" class="zipcode_submit">Submit</button>
+        </form>
+      </aside>
+      <main id="map">
       </main>
     </section>
-    <aside class="get_started_background">
-        <a href="maps.html">
-          <button class="get_started">Get Started</button>
-        </a>
-    </aside>
   </body>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="js/app.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwMhfhDs1z3pAK-yl6ULBKXsJpXji7Hd4&callback=initMap"></script>
 </html>

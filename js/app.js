@@ -216,7 +216,8 @@ function renderDates(element) {
 
 //render the zipcode stuff
 function renderZipCode(element){
-  element.html(`          
+  element.html(` 
+    <h1>Weather Mapper</h1>         
     <p class="welcome">
       Click on any location to the explore world's weather! 
       You can also search for weather by entering the global postal code below.
@@ -287,6 +288,7 @@ function eventListeners(state) {
       $('.country_input').val('');      
     }
     else {
+      renderZipCode($('.zipcode'));
       alert('Enter Valid Country or Valid Zipcode');
     }
   });
@@ -310,6 +312,7 @@ function eventListeners(state) {
         $('.country_input').val('');      
       }
       else {
+        renderZipCode($('.zipcode'));
         alert('Enter Valid Country or Valid Zipcode');
       }
     }
@@ -395,14 +398,12 @@ function fetchWeatherBitApiZip(state, zipCode, country) {
     }    
     else{
       renderZipCode($('.zipcode'));
-      alert('Invalid Global Postal Code is not in the country that you typed in');
+      alert('Invalid: Global Postal Code is not in the country that you typed in');
       state.invalidZipcode = true;
-      console.log('here');
     }
   })
   .done(() => {
     if(!state.invalidZipcode){
-      console.log('bad', state.invalidZipcode);
       $.getJSON('https://api.weatherbit.io/v2.0/forecast/3hourly', query, (response) => {
         setForecastWeatherValuesToState(state.tmrWeather, response.data[0]);
         setForecastWeatherValuesToState(state.dayAfterTmrWeather, response.data[8]);
@@ -417,7 +418,7 @@ function fetchWeatherBitApiZip(state, zipCode, country) {
       alert(`Weatherbit.io limits 75 requests per hour! \nPlease Try Again in ${mins}!!`);
     }
     else{
-      alert('Invalid Global Postal Code in the country you typed in');
+      alert('Invalid: Global Postal Code in the country you typed in');
     }
   });
 
