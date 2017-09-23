@@ -21,13 +21,9 @@ after tomorrow by clicking on the map or entering the correct global postal code
 * Open it in your browser
 
 ## Screenshots
-#### Home Screen <br/>
-When you start the website, you will be directed to the introduction screen of what the app does.<br/>
-![HomeScreen](README_images/home.png "HomeScreen") <br/>
-
 #### Main Screen <br/>
-When you click on get started, you will be directed to the a page with google maps. 
-You will be prompted to give your location. It is up to you if you do or don't.<br/>
+When you start the website, you will be prompted to give your location.
+It is up to you if you do or don't.<br/>
 ![MainScreen](README_images/main.png "Main Screen") <br/>
 
 #### Main Screen2 <br/>
