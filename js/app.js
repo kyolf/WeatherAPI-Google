@@ -62,10 +62,10 @@ const appState = {
 
 //checks if you enter valid country code and zipcode inputs
 function checkValidZipCodeCountry(zipCode, country) {
-  if(country !== '' && isNaN(country) && zipCode !== '' && !isNaN(zipCode)) {
+  if(isNaN(country) && !isNaN(zipCode)) {
     return true;
   }
-  else if(country === '' || !isNaN(country) || zipCode === '' || isNaN(zipCode)) {
+  else if(!isNaN(country) || isNaN(zipCode)) {
     return false;
   }
 }
@@ -222,8 +222,11 @@ function renderZipCode(element){
       Click on any location or enter the global postal code below to lookup the weather! 
     </p>
     <form class="zipcode_form" action="maps.html" method="post">
-      <input type="text" name="zipcode_input" placeholder="Zipcode/Postal Code" class="zipcode_input"/>
-      <input type="text" name="country_input" placeholder="Country Code" class="country_input"/>
+      <p class="country_info">Click <a href="http://www.nationsonline.org/oneworld/country_code_list.htm" target="_blank">HERE</a> 
+      for a list of country codes!</p>
+      <input type="text" name="zipcode_input" placeholder="Zipcode/Postal Code" class="zipcode_input" required/>
+      <input type="text" name="country_input" placeholder="Country Code Ex: US" class="country_input" required/>
+      <p class="fields_info">Both fields must be filled</p>
       <button type="button" class="zipcode_submit css_button">Submit</button>
     </form>`);
 }

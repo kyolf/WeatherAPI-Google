@@ -24,7 +24,7 @@ html, body, section{
 
 .outer_zipcode{
   order:3;
-  margin: 20px 10px;
+  margin: 0 10px;
 }
 
 .hidden{
@@ -41,7 +41,6 @@ html, body, section{
 .date{
   order:1;
   display:flex;
-  /* height: 150px; */
 }
 
 .date article:first-child{
@@ -94,7 +93,24 @@ html, body, section{
 
 .zipcode_form{
   text-align: center;
-  margin: 0 0 10px;
+  margin: 0 0 15px;
+}
+
+.country_info{
+  margin: 0 0 15px
+}
+
+.country_info a:hover{
+  color: #2b4839;
+}
+
+.country_info a{
+  color: #F00;
+}
+
+.fields_info{
+  color: #F00;
+  margin: 15px 0;
 }
 
 .zipcode_input, .country_input{
@@ -127,7 +143,7 @@ html, body, section{
   font-size: 1.6rem;
   font-weight: bold;
   text-align: center;
-  margin: 15px 0 10px;
+  margin: 20px 0 10px;
 }
 
 .weather_icons{
@@ -202,7 +218,7 @@ html, body, section{
   }
 
   .outer_zipcode{
-    width: 300px;
+    width: 320px;
   }
 }
 
@@ -214,7 +230,7 @@ html, body, section{
 
 @media only screen and (min-height: 680px){
   .zipcode{
-    margin: 40px 20px 20px;
+    margin: 40px 20px 0;
   }
 
   .app_title{
@@ -224,7 +240,7 @@ html, body, section{
 
 @media only screen and (min-height: 700px){
   .zipcode{
-    margin: 30px 20px 20px;
+    margin: 50px 20px 0;
   }
 
   .app_title{
