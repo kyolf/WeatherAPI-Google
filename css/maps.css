@@ -57,6 +57,7 @@ html, body, section{
   padding: 10px;
   border-left: 1px black solid;
   border-right: 1px black solid;
+  cursor: pointer;
 }
 
 .date_border{
